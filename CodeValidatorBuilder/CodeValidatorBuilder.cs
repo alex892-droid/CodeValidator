@@ -10,10 +10,6 @@
 
     public class NamespaceValidatorBuilder
     {
-        public NamespaceValidatorBuilder()
-        {
-        }
-
         public PropertyValidatorBuilder ForAllProperties()
         {
             return new PropertyValidatorBuilder();
