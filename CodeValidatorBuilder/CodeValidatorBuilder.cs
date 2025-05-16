@@ -4,7 +4,7 @@
     {
         public NamespaceValidatorBuilder ForNamespace(string namespaceName)
         {
-            return new NamespaceValidatorBuilder();
+            throw new NotSupportedException("This builder is for analyzers only.");
         }
     }
 
@@ -12,7 +12,7 @@
     {
         public PropertyValidatorBuilder ForAllProperties()
         {
-            return new PropertyValidatorBuilder();
+            throw new NotSupportedException("This builder is for analyzers only.");
         }
     }
 
@@ -20,7 +20,7 @@
     {
         public PropertyValidatorBuilder MustBeNullable(string errorMessage)
         {
-            return this;
+            throw new NotSupportedException("This builder is for analyzers only.");
         }
     }
 }
