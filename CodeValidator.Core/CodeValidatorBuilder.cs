@@ -19,6 +19,11 @@
         {
             throw new NotSupportedException("This builder is for analyzers only.");
         }
+
+        public NamespaceValidatorBuilder ExceptClass(string className)
+        {
+            throw new NotSupportedException("This builder is for analyzers only.");
+        }
     }
 
     public class PropertyValidatorBuilder
