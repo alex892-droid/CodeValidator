@@ -8,8 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\CodeValidatorBuilder\CodeValidator.Core.csproj" />
-		<ProjectReference Include="..\CodeValidator\CodeValidator\CodeValidator.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\CodeValidator.Core\CodeValidator.Core.csproj" />
+		<ProjectReference Include="..\CodeValidator.Analyzer\CodeValidator.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 </Project>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>CodeValidator</id>
+    <version>1.0.0</version>
+    <authors>Alexis Bonneau</authors>
+    <owners>Alexis Bonneau</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Custom Roslyn Analyzer with a fluent Builder API.</description>
+    <tags>roslyn analyzer builder code-validation</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\CodeValidator.Core\bin\Release\netstandard2.0\CodeValidator.Core.dll" target="lib\netstandard2.0\" />
+    <file src="bin\Release\netstandard2.0\CodeValidator.Analyzer.dll" target="analyzers\dotnet\cs\" />
+  </files>
+</package>

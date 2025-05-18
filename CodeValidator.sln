@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Analyzer", "CodeValidator\CodeValidator\CodeValidator.Analyzer.csproj", "{447B411B-C668-406A-B3CD-96DCDE5E8BFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Analyzer", "CodeValidator.Analyzer\CodeValidator.Analyzer.csproj", "{6C5228EE-5725-3CCF-A9D8-745B2D897324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Core", "CodeValidatorBuilder\CodeValidator.Core.csproj", "{2F00F696-3A8A-487C-B347-090E8FB67F53}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Core", "CodeValidator.Core\CodeValidator.Core.csproj", "{A237C166-36FC-D0C3-6826-1E1D6EFE4699}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Tester", "ConsoleTest\CodeValidator.Tester.csproj", "{3C7FFCD3-5436-42B1-B3CF-933BFF19C1F2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Tester", "CodeValidator.Test\CodeValidator.Tester.csproj", "{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{447B411B-C668-406A-B3CD-96DCDE5E8BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{447B411B-C668-406A-B3CD-96DCDE5E8BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{447B411B-C668-406A-B3CD-96DCDE5E8BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{447B411B-C668-406A-B3CD-96DCDE5E8BFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F00F696-3A8A-487C-B347-090E8FB67F53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F00F696-3A8A-487C-B347-090E8FB67F53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F00F696-3A8A-487C-B347-090E8FB67F53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F00F696-3A8A-487C-B347-090E8FB67F53}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C7FFCD3-5436-42B1-B3CF-933BFF19C1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C7FFCD3-5436-42B1-B3CF-933BFF19C1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C7FFCD3-5436-42B1-B3CF-933BFF19C1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C7FFCD3-5436-42B1-B3CF-933BFF19C1F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C5228EE-5725-3CCF-A9D8-745B2D897324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C5228EE-5725-3CCF-A9D8-745B2D897324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C5228EE-5725-3CCF-A9D8-745B2D897324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C5228EE-5725-3CCF-A9D8-745B2D897324}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A237C166-36FC-D0C3-6826-1E1D6EFE4699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A237C166-36FC-D0C3-6826-1E1D6EFE4699}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A237C166-36FC-D0C3-6826-1E1D6EFE4699}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A237C166-36FC-D0C3-6826-1E1D6EFE4699}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

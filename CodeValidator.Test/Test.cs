@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CodeValidator.Tester.Test
 {
-    internal class Form
+    internal class zForm
     {
         public int? Tester { get; set; }
         public int? Tester2 { get; set; }
