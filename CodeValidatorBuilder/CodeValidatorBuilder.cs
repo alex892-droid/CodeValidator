@@ -14,11 +14,23 @@
         {
             throw new NotSupportedException("This builder is for analyzers only.");
         }
+
+        public ClassValidatorBuilder ForAllClasses()
+        {
+            throw new NotSupportedException("This builder is for analyzers only.");
+        }
     }
 
     public class PropertyValidatorBuilder
     {
-        public PropertyValidatorBuilder MustBeNullable(string errorMessage)
+        public PropertyValidatorBuilder RequireNullableProperties(string errorMessage)
+        {
+            throw new NotSupportedException("This builder is for analyzers only.");
+        }
+    }
+    public class ClassValidatorBuilder
+    {
+        public ClassValidatorBuilder RequireClassNamePattern(string regex, string errorMessage)
         {
             throw new NotSupportedException("This builder is for analyzers only.");
         }

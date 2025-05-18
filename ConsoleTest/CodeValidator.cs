@@ -13,7 +13,12 @@ namespace CodeValidator.Tester
             new CodeValidatorBuilder.CodeValidatorBuilder()
                 .ForNamespace("CodeValidator.Tester.Test")
                 .ForAllProperties()
-                .MustBeNullable("Les propriétés doivent être nullable");
+                .RequireNullableProperties("Les propriétés doivent être nullable");
+
+            new CodeValidatorBuilder.CodeValidatorBuilder()
+                .ForNamespace("CodeValidator.Tester.Test")
+                .ForAllClasses()
+                .RequireClassNamePattern("^Form.*", "Les classes doivent commencer par Form");
         }
     }
 }
