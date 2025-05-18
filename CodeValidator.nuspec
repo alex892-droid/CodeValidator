@@ -13,6 +13,6 @@
   </metadata>
   <files>
     <file src="..\CodeValidator.Core\bin\Release\netstandard2.0\CodeValidator.Core.dll" target="lib\netstandard2.0\" />
-    <file src="bin\Release\netstandard2.0\CodeValidator.Analyzer.dll" target="analyzers\dotnet\cs\" />
+    <file src="..\CodeValidator.Analyzer\bin\Release\netstandard2.0\CodeValidator.Analyzer.dll" target="analyzers\dotnet\cs\" />
   </files>
 </package>

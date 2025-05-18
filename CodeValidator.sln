@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Core", "CodeV
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Tester", "CodeValidator.Test\CodeValidator.Tester.csproj", "{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeValidator.Package", "CodeValidator.Package\CodeValidator.Package.csproj", "{59F8A098-D25B-48EA-9790-6CCC5599FDAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE695B58-5DD4-EFCF-96C6-D9A2C02D31ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F8A098-D25B-48EA-9790-6CCC5599FDAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F8A098-D25B-48EA-9790-6CCC5599FDAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F8A098-D25B-48EA-9790-6CCC5599FDAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F8A098-D25B-48EA-9790-6CCC5599FDAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

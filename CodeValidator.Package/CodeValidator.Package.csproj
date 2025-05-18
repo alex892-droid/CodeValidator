@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <IncludeBuildOutput>false</IncludeBuildOutput>
+
+	  <PackageId>CodeValidator</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>Alexis Bonneau</Authors>
+	  <Description>Fluent builder for code validation via compilation errors</Description>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\CodeValidator.Core\bin\Release\net8.0\CodeValidator.Core.dll" Pack="true" PackagePath="lib/net8.0/" />
+	</ItemGroup>
+
+	<!-- L'analyzer sera livré dans analyzers/ -->
+	<ItemGroup>
+		<None Include="..\CodeValidator.Analyzer\bin\Release\netstandard2.0\CodeValidator.Analyzer.dll" Pack="true" PackagePath="analyzers/dotnet/cs" />
+	</ItemGroup>
+
+</Project>
