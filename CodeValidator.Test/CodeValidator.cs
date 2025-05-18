@@ -10,15 +10,15 @@ namespace CodeValidator.Tester
     {
         public CodeValidator()
         {
-            new CodeValidatorBuilder.CodeValidatorBuilder()
-                .ForAllSubNamespacesOf("CodeValidator.Tester.Test")
-                .ForAllProperties()
-                .RequireNullableProperties("Les propriétés doivent être nullable");
+            var builder = new CodeValidatorBuilder.CodeValidatorBuilder();
 
-            new CodeValidatorBuilder.CodeValidatorBuilder()
-                .ForAllSubNamespacesOf("CodeValidator.Tester.Test")
-                .ForAllClasses()
-                .RequireClassNamePattern("^Form.*", "Les classes doivent commencer par Form");
+            builder.ForAllSubNamespacesOf("CodeValidator.Tester.Test")
+                   .ForAllProperties()
+                   .RequireNullableProperties("Les propriétés doivent être nullable");
+
+            builder.ForAllSubNamespacesOf("CodeValidator.Tester.Test")
+                   .ForAllClasses()
+                   .RequireClassNamePattern("^Form.*", "Les classes doivent commencer par Form");
         }
     }
 }
