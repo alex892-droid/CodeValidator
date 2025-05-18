@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Immutable;
 using System.Linq;
+using System;
+using System.Text.RegularExpressions;
 
 namespace CodeValidator
 {
@@ -36,184 +38,118 @@ namespace CodeValidator
             VerifyNullableProperties(context);
             VerifyClassesNames(context);
         }
-
         private void VerifyClassesNames(SyntaxNodeAnalysisContext context)
         {
             var invocation = (InvocationExpressionSyntax)context.Node;
-            var symbolInfo = context.SemanticModel.GetSymbolInfo(invocation);
-            var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
-
-            if (methodSymbol == null || methodSymbol.Name != "RequireClassNamePattern")
+            if (!(context.SemanticModel.GetSymbolInfo(invocation).Symbol is IMethodSymbol methodSymbol) ||
+                methodSymbol.Name != "RequireClassNamePattern")
                 return;
 
-            string customMessage = "Class name does not match regex";
-            string targetNamespace = null;
-            string pattern = null;
+            string pattern = null, customMessage = "Class name does not match regex";
 
-            // Extract regex pattern and custom message
-            if (invocation.ArgumentList?.Arguments.Count >= 1)
+            var args = invocation.ArgumentList.Arguments;
+            if (args.Count > 0) TryGetStringArgument(context, args[0], out pattern);
+            if (args.Count > 1) TryGetStringArgument(context, args[1], out customMessage);
+
+            if (!TryGetNamespaceFromChainedInvocation(context, invocation, out var ns, out var includeSubs))
+                return;
+
+            var regex = new Regex(pattern);
+            var compilation = context.SemanticModel.Compilation;
+
+            ForEachClassInNamespace(compilation, ns, includeSubs, (classSymbol, _) =>
             {
-                var patternArg = invocation.ArgumentList.Arguments[0].Expression;
-                var patternValue = context.SemanticModel.GetConstantValue(patternArg);
-                if (patternValue.HasValue && patternValue.Value is string patternStr)
+                if (!regex.IsMatch(classSymbol.Name))
                 {
-                    pattern = patternStr;
+                    context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None, $"{customMessage}: class {classSymbol.Name}"));
                 }
-            }
+            });
+        }
 
-            if (invocation.ArgumentList?.Arguments.Count >= 2)
+        private void VerifyNullableProperties(SyntaxNodeAnalysisContext context)
+        {
+            var invocation = (InvocationExpressionSyntax)context.Node;
+            if (!(context.SemanticModel.GetSymbolInfo(invocation).Symbol is IMethodSymbol methodSymbol) ||
+                methodSymbol.Name != "RequireNullableProperties")
+                return;
+
+            string customMessage = "Property must be nullable";
+            var args = invocation.ArgumentList.Arguments;
+            if (args.Count > 0) TryGetStringArgument(context, args[0], out customMessage);
+
+            if (!TryGetNamespaceFromChainedInvocation(context, invocation, out var ns, out var includeSubs))
+                return;
+
+            var compilation = context.SemanticModel.Compilation;
+
+            ForEachClassInNamespace(compilation, ns, includeSubs, (classSymbol, _) =>
             {
-                var msgArg = invocation.ArgumentList.Arguments[1].Expression;
-                var msgValue = context.SemanticModel.GetConstantValue(msgArg);
-                if (msgValue.HasValue && msgValue.Value is string msgStr)
+                foreach (var prop in classSymbol.GetMembers().OfType<IPropertySymbol>())
                 {
-                    customMessage = msgStr;
+                    if (prop.NullableAnnotation != NullableAnnotation.Annotated)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(Rule, Location.None,
+                            $"{customMessage}: property {prop.Name} in class {classSymbol.Name}."));
+                    }
                 }
-            }
+            });
+        }
 
-            // Walk up the chain to get the namespace
+        private bool TryGetStringArgument(SyntaxNodeAnalysisContext context, ArgumentSyntax arg, out string value)
+        {
+            value = null;
+            var constValue = context.SemanticModel.GetConstantValue(arg.Expression);
+            if (constValue.HasValue && constValue.Value is string str)
+            {
+                value = str;
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryGetNamespaceFromChainedInvocation(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocation, out string ns, out bool includeSubNamespaces)
+        {
+            ns = null;
+            includeSubNamespaces = false;
+
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is InvocationExpressionSyntax chainedInvocation &&
                 chainedInvocation.Expression is MemberAccessExpressionSyntax chainedMemberAccess &&
                 chainedMemberAccess.Expression is InvocationExpressionSyntax nsInvocation)
             {
                 var nsSymbol = context.SemanticModel.GetSymbolInfo(nsInvocation).Symbol as IMethodSymbol;
-                if (nsSymbol != null && nsSymbol.Name == "ForNamespace" &&
-                    nsInvocation.ArgumentList?.Arguments.Count > 0)
+
+                if (nsSymbol != null &&
+                    nsInvocation.ArgumentList?.Arguments.Count > 0 &&
+                    TryGetStringArgument(context, nsInvocation.ArgumentList.Arguments[0], out string nsStr))
                 {
-                    var nsArg = nsInvocation.ArgumentList.Arguments[0].Expression;
-                    var nsValue = context.SemanticModel.GetConstantValue(nsArg);
-                    if (nsValue.HasValue && nsValue.Value is string nsStr)
-                    {
-                        targetNamespace = nsStr;
-                    }
+                    ns = nsStr;
+                    includeSubNamespaces = nsSymbol.Name == "ForAllSubNamespacesOf";
+                    return true;
                 }
             }
 
-            if (targetNamespace != null && pattern != null)
-            {
-                var regex = new System.Text.RegularExpressions.Regex(pattern);
-                var compilation = context.SemanticModel.Compilation;
-
-                foreach (var tree in compilation.SyntaxTrees)
-                {
-                    var semanticModel = compilation.GetSemanticModel(tree);
-                    var root = tree.GetRoot();
-
-                    var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-                    foreach (var classDecl in classDeclarations)
-                    {
-                        var classSymbol = semanticModel.GetDeclaredSymbol(classDecl);
-                        if (classSymbol == null)
-                            continue;
-
-                        if (classSymbol.ContainingNamespace?.ToDisplayString() == targetNamespace &&
-                            !regex.IsMatch(classSymbol.Name))
-                        {
-                            var diagnostic = Diagnostic.Create(
-                                Rule,
-                                Location.None,
-                                $"{customMessage}: class {classSymbol.Name}");
-
-                            context.ReportDiagnostic(diagnostic);
-                        }
-                    }
-                }
-            }
+            return false;
         }
 
 
-        private void VerifyNullableProperties(SyntaxNodeAnalysisContext context)
+        private void ForEachClassInNamespace(Compilation compilation, string ns, bool includeSubNamespaces, Action<INamedTypeSymbol, SemanticModel> action)
         {
-            var invocation = (InvocationExpressionSyntax)context.Node;
-            var symbolInfo = context.SemanticModel.GetSymbolInfo(invocation);
-            var methodSymbol = symbolInfo.Symbol as IMethodSymbol;
-
-            if (methodSymbol == null)
-                return;
-
-            if (methodSymbol.Name == "RequireNullableProperties")
+            foreach (var tree in compilation.SyntaxTrees)
             {
-                string customMessage = "Property must be nullable";
-                string targetNamespace = null;
+                var model = compilation.GetSemanticModel(tree);
+                var classes = tree.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>();
 
-                // Extract message from first argument
-                if (invocation.ArgumentList?.Arguments.Count > 0)
+                foreach (var classDecl in classes)
                 {
-                    var firstArg = invocation.ArgumentList.Arguments[0].Expression;
-                    var constantValue = context.SemanticModel.GetConstantValue(firstArg);
-
-                    if (constantValue.HasValue && constantValue.Value is string message)
+                    var symbol = model.GetDeclaredSymbol(classDecl);
+                    if (symbol != null)
                     {
-                        customMessage = message;
-                    }
-                }
-
-                // Walk up to find ForNamespace call (via chained calls)
-                if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
-                {
-                    if (memberAccess.Expression is InvocationExpressionSyntax chainedInvocation)
-                    {
-                        var chainedSymbol = context.SemanticModel.GetSymbolInfo(chainedInvocation).Symbol as IMethodSymbol;
-                        if (chainedSymbol != null && chainedSymbol.Name == "ForAllProperties")
+                        var classNs = symbol.ContainingNamespace?.ToDisplayString();
+                        if (classNs != null &&
+                            (classNs == ns || (includeSubNamespaces && classNs.StartsWith(ns + "."))))
                         {
-                            // Go up again to get ForNamespace
-                            if (chainedInvocation.Expression is MemberAccessExpressionSyntax chainedMemberAccess)
-                            {
-                                if (chainedMemberAccess.Expression is InvocationExpressionSyntax nsInvocation)
-                                {
-                                    var nsSymbol = context.SemanticModel.GetSymbolInfo(nsInvocation).Symbol as IMethodSymbol;
-                                    if (nsSymbol != null && nsSymbol.Name == "ForNamespace")
-                                    {
-                                        // Extract namespace from first argument
-                                        if (nsInvocation.ArgumentList?.Arguments.Count > 0)
-                                        {
-                                            var nsArg = nsInvocation.ArgumentList.Arguments[0].Expression;
-                                            var nsValue = context.SemanticModel.GetConstantValue(nsArg);
-                                            if (nsValue.HasValue && nsValue.Value is string nsStr)
-                                            {
-                                                targetNamespace = nsStr;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (targetNamespace != null)
-                {
-                    // Now inspect the compilation for properties in the namespace
-                    var compilation = context.SemanticModel.Compilation;
-                    foreach (var tree in compilation.SyntaxTrees)
-                    {
-                        var semanticModel = compilation.GetSemanticModel(tree);
-                        var root = tree.GetRoot();
-
-                        var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-                        foreach (var classDecl in classDeclarations)
-                        {
-                            var classSymbol = semanticModel.GetDeclaredSymbol(classDecl);
-
-                            if (classSymbol == null)
-                                continue;
-
-                            if (classSymbol.ContainingNamespace?.ToDisplayString() == targetNamespace)
-                            {
-                                foreach (var property in classSymbol.GetMembers().OfType<IPropertySymbol>())
-                                {
-                                    if (property.NullableAnnotation != NullableAnnotation.Annotated)
-                                    {
-                                        var diagnostic = Diagnostic.Create(
-                                            Rule,
-                                            Location.None,
-                                            $"{customMessage}: property {property.Name} in class {classSymbol.Name}.");
-
-                                        context.ReportDiagnostic(diagnostic);
-                                    }
-                                }
-                            }
+                            action(symbol, model);
                         }
                     }
                 }

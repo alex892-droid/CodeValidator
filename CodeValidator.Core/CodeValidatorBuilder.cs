@@ -6,6 +6,11 @@
         {
             throw new NotSupportedException("This builder is for analyzers only.");
         }
+
+        public NamespaceValidatorBuilder ForAllSubNamespacesOf(string namespaceName)
+        {
+            throw new NotSupportedException("This builder is for analyzers only.");
+        }
     }
 
     public class NamespaceValidatorBuilder
@@ -16,11 +21,6 @@
         }
 
         public ClassValidatorBuilder ForAllClasses()
-        {
-            throw new NotSupportedException("This builder is for analyzers only.");
-        }
-
-        public NamespaceValidatorBuilder ExceptClass(string className)
         {
             throw new NotSupportedException("This builder is for analyzers only.");
         }
